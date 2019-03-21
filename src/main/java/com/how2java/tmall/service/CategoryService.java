@@ -32,4 +32,21 @@ public class CategoryService {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         return categoryDAO.findAll(sort);
     }
+
+    public void add(Category bean) {
+        categoryDAO.save(bean);
+    }
+
+    public void delete(int id) {
+        categoryDAO.delete(id);
+    }
+
+    public Category get(int id) {
+        Category c= categoryDAO.findOne(id);
+        return c;
+    }
+
+    public void update(Category bean) {
+        categoryDAO.save(bean);
+    }
 }

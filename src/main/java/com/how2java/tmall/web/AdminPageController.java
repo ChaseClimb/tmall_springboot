@@ -22,4 +22,11 @@ public class AdminPageController {
         return "admin/listCategory";
     }
 
+    //跳转编辑页面
+    @GetMapping(value="/admin_category_edit")
+    public String editCategory(){
+        return "admin/editCategory";
+    }
+
+
 }

@@ -3,29 +3,29 @@
         <ul class="pagination">
             <!--首页-->
             <li :class="{ disabled: pagination.first }">
-                <a  href="#nowhere" @click="jump('first')">«</a>
+                <a href="#nowhere" @click="jump('first')">«</a>
             </li>
 
             <!--上一页-->
             <li :class="{ disabled: !pagination.hasPrevious }">
-                <a  href="#nowhere" @click="jump('pre')">‹</a>
+                <a href="#nowhere" @click="jump('pre')">‹</a>
             </li>
 
             <!--某一页-->
-            <li  v-for="i in pagination.navigatepageNums" :class="{active:pagination.number == i-1}">
-                <a href="#nowhere" @click="jumpByNumber(i-1)" >
+            <li v-for="i in pagination.navigatepageNums" :class="{active:pagination.number == i-1}">
+                <a href="#nowhere" @click="jumpByNumber(i-1)">
                     {{i}}
                 </a>
             </li>
 
             <!--下一页-->
             <li :class="{ disabled: !pagination.hasNext }">
-                <a  href="#nowhere" @click="jump('next')">›</a>
+                <a href="#nowhere" @click="jump('next')">›</a>
             </li>
 
             <!--尾页-->
             <li :class="{ disabled: pagination.last }">
-                <a  href="#nowhere" @click="jump('last')"> »</a>
+                <a href="#nowhere" @click="jump('last')"> »</a>
             </li>
         </ul>
     </nav>
