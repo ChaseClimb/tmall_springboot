@@ -84,7 +84,7 @@
 
         //点击按钮跳转函数
         function jump(page, vue) {
-            /*当前页码为第一页*/
+            /*当前页码为第一页,hibernate分页时是从0开始的*/
             if ('first' == page && !vue.pagination.first)
                 vue.list(0);
 
