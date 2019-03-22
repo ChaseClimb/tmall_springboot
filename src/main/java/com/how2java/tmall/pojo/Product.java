@@ -1,29 +1,48 @@
 package com.how2java.tmall.pojo;
+import java.util.Date;
+import java.util.List;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.sql.Timestamp;
-import java.util.Objects;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
-/**
- * @author Created by chen
- * @date 2019/3/20 10:32
- */
+import org.springframework.data.elasticsearch.annotations.Document;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
+@Table(name = "product")
+@JsonIgnoreProperties({ "handler","hibernateLazyInitializer"})
+@Document(indexName = "tmall_springboot",type = "product")
 public class Product {
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    int id;
+
+    @ManyToOne
+    @JoinColumn(name="cid")
+    private Category category;
+
+
+    //如果既没有指明 关联到哪个Column,又没有明确要用@Transient忽略，那么就会自动关联到表对应的同名字段
     private String name;
     private String subTitle;
-    private Double originalPrice;
-    private Double promotePrice;
-    private Integer stock;
-    private Integer cid;
-    private Timestamp createDate;
+    private float originalPrice;
+    private float promotePrice;
+    private int stock;
+    private Date createDate;
 
-    @Id
-    @Column(name = "id")
+    //不进行映射，数据库没有该字段
+    @Transient
+    private ProductImage firstProductImage;
+
     public int getId() {
         return id;
     }
@@ -32,8 +51,14 @@ public class Product {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "name")
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
     public String getName() {
         return name;
     }
@@ -42,8 +67,6 @@ public class Product {
         this.name = name;
     }
 
-    @Basic
-    @Column(name = "subTitle")
     public String getSubTitle() {
         return subTitle;
     }
@@ -52,73 +75,43 @@ public class Product {
         this.subTitle = subTitle;
     }
 
-    @Basic
-    @Column(name = "originalPrice")
-    public Double getOriginalPrice() {
+    public float getOriginalPrice() {
         return originalPrice;
     }
 
-    public void setOriginalPrice(Double originalPrice) {
+    public void setOriginalPrice(float originalPrice) {
         this.originalPrice = originalPrice;
     }
 
-    @Basic
-    @Column(name = "promotePrice")
-    public Double getPromotePrice() {
+    public float getPromotePrice() {
         return promotePrice;
     }
 
-    public void setPromotePrice(Double promotePrice) {
+    public void setPromotePrice(float promotePrice) {
         this.promotePrice = promotePrice;
     }
 
-    @Basic
-    @Column(name = "stock")
-    public Integer getStock() {
+    public int getStock() {
         return stock;
     }
 
-    public void setStock(Integer stock) {
+    public void setStock(int stock) {
         this.stock = stock;
     }
 
-    @Basic
-    @Column(name = "cid")
-    public Integer getCid() {
-        return cid;
-    }
-
-    public void setCid(Integer cid) {
-        this.cid = cid;
-    }
-
-    @Basic
-    @Column(name = "createDate")
-    public Timestamp getCreateDate() {
+    public Date getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Timestamp createDate) {
+    public void setCreateDate(Date createDate) {
         this.createDate = createDate;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
-        return id == product.id &&
-                Objects.equals(name, product.name) &&
-                Objects.equals(subTitle, product.subTitle) &&
-                Objects.equals(originalPrice, product.originalPrice) &&
-                Objects.equals(promotePrice, product.promotePrice) &&
-                Objects.equals(stock, product.stock) &&
-                Objects.equals(cid, product.cid) &&
-                Objects.equals(createDate, product.createDate);
+    public ProductImage getFirstProductImage() {
+        return firstProductImage;
+    }
+    public void setFirstProductImage(ProductImage firstProductImage) {
+        this.firstProductImage = firstProductImage;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, subTitle, originalPrice, promotePrice, stock, cid, createDate);
-    }
+
 }

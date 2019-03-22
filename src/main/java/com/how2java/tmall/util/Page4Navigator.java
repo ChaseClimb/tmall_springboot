@@ -8,9 +8,6 @@ import org.springframework.data.domain.Page;
 public class Page4Navigator<T> {
     Page<T> pageFromJPA;
 
-    //导航栏页码个数
-    int navigatePages;
-
     int totalPages;
 
     //当前页码（从0开始计算）
@@ -39,6 +36,9 @@ public class Page4Navigator<T> {
 
     //是否有上一页
     boolean isHasPrevious;
+
+    //导航栏页码个数
+    int navigatePages;
 
     int[] navigatepageNums;
 
@@ -94,15 +94,16 @@ public class Page4Navigator<T> {
             int startNum = num - navigatePages / 2;
             int endNum = num + navigatePages / 2;
 
-            if (startNum <= 0) {
+            if (startNum < 0) {
                 startNum = 0;
                 //最前几页
                 for (int i = 0; i < navigatePages; i++) {
                     navigatepageNums[i] = ++startNum;
                 }
-            } else if (endNum >= totalPages - 1) {
+            } else if (endNum > totalPages - 1) {
                 //最后几页
                 for (int i = navigatePages - 1; i >= 0; i--) {
+                    //先加载到操作数栈中，然后局部变量表中的totalPages-1
                     navigatepageNums[i] = totalPages--;
                 }
             } else {

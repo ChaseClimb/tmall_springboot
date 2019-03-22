@@ -1,23 +1,35 @@
 package com.how2java.tmall.pojo;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.Objects;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-/**
- * @author Created by chen
- * @date 2019/3/20 10:32
- */
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
+@Table(name = "property")
+@JsonIgnoreProperties({ "handler","hibernateLazyInitializer" })
 public class Property {
-    private int id;
-    private Integer cid;
-    private String name;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    private int id;
+
+    @Column(name = "name")
+    private String name;
+
+    //@ManyToOne 表示多对一关系
+    //@JoinColumn(name="cid") 表示关系字段是cid
+    @ManyToOne
+    @JoinColumn(name="cid")
+    private Category category;
+
     public int getId() {
         return id;
     }
@@ -26,38 +38,23 @@ public class Property {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "cid")
-    public Integer getCid() {
-        return cid;
-    }
-
-    public void setCid(Integer cid) {
-        this.cid = cid;
-    }
-
-    @Basic
-    @Column(name = "name")
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Property property = (Property) o;
-        return id == property.id &&
-                Objects.equals(cid, property.cid) &&
-                Objects.equals(name, property.name);
+    public Category getCategory() {
+        return category;
+    }
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, cid, name);
+    public String toString() {
+        return "Property [id=" + id + ", name=" + name + ", category=" + category + "]";
     }
+
 }
