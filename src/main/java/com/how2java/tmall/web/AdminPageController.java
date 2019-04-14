@@ -16,6 +16,7 @@ public class AdminPageController {
         return "redirect:admin_category_list";
     }
 
+
     //服务器跳转
     @GetMapping(value="/admin_category_list")
     public String listCategory(){
@@ -31,7 +32,6 @@ public class AdminPageController {
     @GetMapping(value="/admin_order_list")
     public String listOrder(){
         return "admin/listOrder";
-
     }
 
     @GetMapping(value="/admin_product_list")
@@ -74,5 +74,7 @@ public class AdminPageController {
         return "admin/listUser";
 
     }
+
+
 
 }

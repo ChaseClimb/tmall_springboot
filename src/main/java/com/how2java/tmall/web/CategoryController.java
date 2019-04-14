@@ -39,7 +39,7 @@ public class CategoryController {
     }
 
 
-    public void saveOrUpdateImageFile(Category bean, MultipartFile image, HttpServletRequest request)
+    private void saveOrUpdateImageFile(Category bean, MultipartFile image, HttpServletRequest request)
             throws IOException {
         //获取上传到服务器上的文件路径
         File imageFolder = new File(request.getServletContext().getRealPath("img/category"));

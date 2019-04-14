@@ -70,8 +70,12 @@ public class Orderitem {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Orderitem orderitem = (Orderitem) o;
         return id == orderitem.id &&
                 Objects.equals(pid, orderitem.pid) &&

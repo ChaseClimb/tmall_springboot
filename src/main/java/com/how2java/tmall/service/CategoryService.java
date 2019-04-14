@@ -43,8 +43,7 @@ public class CategoryService {
     }
 
     public Category get(int id) {
-        Category c= categoryDAO.findOne(id);
-        return c;
+        return categoryDAO.findOne(id);
     }
 
     public void update(Category bean) {

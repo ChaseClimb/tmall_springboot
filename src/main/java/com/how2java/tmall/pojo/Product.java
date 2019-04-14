@@ -1,4 +1,5 @@
 package com.how2java.tmall.pojo;
+
 import java.util.Date;
 import java.util.List;
 
@@ -18,8 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "product")
-@JsonIgnoreProperties({ "handler","hibernateLazyInitializer"})
-@Document(indexName = "tmall_springboot",type = "product")
+@JsonIgnoreProperties({"handler", "hibernateLazyInitializer"})
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +27,7 @@ public class Product {
     int id;
 
     @ManyToOne
-    @JoinColumn(name="cid")
+    @JoinColumn(name = "cid")
     private Category category;
 
 
@@ -39,7 +39,7 @@ public class Product {
     private int stock;
     private Date createDate;
 
-    //不进行映射，数据库没有该字段
+    //不进行映射，数据库没有该字段,只用于返回前端
     @Transient
     private ProductImage firstProductImage;
 
@@ -106,9 +106,11 @@ public class Product {
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
     }
+
     public ProductImage getFirstProductImage() {
         return firstProductImage;
     }
+
     public void setFirstProductImage(ProductImage firstProductImage) {
         this.firstProductImage = firstProductImage;
     }

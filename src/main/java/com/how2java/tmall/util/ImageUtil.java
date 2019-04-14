@@ -12,6 +12,10 @@ import java.io.IOException;
  */
 public class ImageUtil {
 
+    /*
+        仅仅通过ImageIO.write(img, "jpg", file);不足以保证转换出来的jpg文件显示正常。
+        这段转换代码，可以确保转换后jpg的图片显示正常，而不会出现暗红色
+     */
     //确保图片文件的二进制格式是jpg
     public static BufferedImage change2jpg(File f) {
         try {
@@ -19,11 +23,11 @@ public class ImageUtil {
             PixelGrabber pg = new PixelGrabber(i, 0, 0, -1, -1, true);
             pg.grabPixels();
             int width = pg.getWidth(), height = pg.getHeight();
-            final int[] RGB_MASKS = {0xFF0000, 0xFF00, 0xFF};
-            final ColorModel RGB_OPAQUE = new DirectColorModel(32, RGB_MASKS[0], RGB_MASKS[1], RGB_MASKS[2]);
+            final int[] rgbMasks = {0xFF0000, 0xFF00, 0xFF};
+            final ColorModel rgbOpaque = new DirectColorModel(32, rgbMasks[0], rgbMasks[1], rgbMasks[2]);
             DataBuffer buffer = new DataBufferInt((int[]) pg.getPixels(), pg.getWidth() * pg.getHeight());
-            WritableRaster raster = Raster.createPackedRaster(buffer, width, height, width, RGB_MASKS, null);
-            BufferedImage img = new BufferedImage(RGB_OPAQUE, raster, false, null);
+            WritableRaster raster = Raster.createPackedRaster(buffer, width, height, width, rgbMasks, null);
+            BufferedImage img = new BufferedImage(rgbOpaque, raster, false, null);
             return img;
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -44,7 +48,7 @@ public class ImageUtil {
         }
     }
 
-    public static Image resizeImage(Image srcImage, int width, int height) {
+    private static Image resizeImage(Image srcImage, int width, int height) {
         try {
 
             BufferedImage buffImg = null;

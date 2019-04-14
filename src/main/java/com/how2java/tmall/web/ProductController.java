@@ -21,11 +21,18 @@ public class ProductController {
     ProductImageService productImageService;
 
     @GetMapping("/categories/{cid}/products")
-    public Page4Navigator<Product> list(@PathVariable("cid") int cid, @RequestParam(value = "start", defaultValue = "0") int start, @RequestParam(value = "size", defaultValue = "5") int size) throws Exception {
+    public Page4Navigator<Product> list(@PathVariable("cid") int cid,
+                                        @RequestParam(value = "start", defaultValue = "0") int start,
+                                        @RequestParam(value = "size", defaultValue = "5") int size) throws Exception {
         start = start < 0 ? 0 : start;
         Page4Navigator<Product> page = productService.list(cid, start, size, 5);
+        /**
+         "firstProductImage": {
+         "id": 10199,
+         "type": "single"
+         }
+         */
         productImageService.setFirstProdutImages(page.getContent());
-
         return page;
     }
 
@@ -53,4 +60,5 @@ public class ProductController {
         productService.update(bean);
         return bean;
     }
+
 }
