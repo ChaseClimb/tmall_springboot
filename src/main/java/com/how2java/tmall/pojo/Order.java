@@ -1,32 +1,96 @@
 package com.how2java.tmall.pojo;
 
-import javax.persistence.*;
-import java.sql.Timestamp;
-import java.util.Objects;
+import java.util.Date;
+import java.util.List;
 
-/**
- * @author Created by chen
- * @date 2019/3/20 10:32
- */
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.how2java.tmall.service.OrderService;
+
 @Entity
-@Table(name = "order_", schema = "tmall_springboot", catalog = "")
+@Table(name = "order_")
+@JsonIgnoreProperties({"handler", "hibernateLazyInitializer"})
 public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
+
+    @ManyToOne
+    @JoinColumn(name = "uid")
+
+    private User user;
+
     private String orderCode;
     private String address;
     private String post;
     private String receiver;
     private String mobile;
     private String userMessage;
-    private Timestamp createDate;
-    private Timestamp payDate;
-    private Timestamp deliveryDate;
-    private Timestamp confirmDate;
-    private Integer uid;
+    private Date createDate;
+    private Date payDate;
+    private Date deliveryDate;
+    private Date confirmDate;
     private String status;
 
-    @Id
-    @Column(name = "id")
+    //为什么不用 @JsonIgnoreProperties 来标记这个字段呢？
+    // 因为后续我们要整合Redis，如果标记成了 @JsonIgnoreProperties 会在和 Redis 整合的时候有 Bug,
+    @Transient
+    private List<OrderItem> orderItems;
+
+    @Transient
+    private float total;
+
+    @Transient
+    private int totalNumber;
+
+    @Transient
+    private String statusDesc;
+
+    public void setStatusDesc(String statusDesc) {
+        this.statusDesc = statusDesc;
+    }
+
+    public String getStatusDesc() {
+        if (null != statusDesc) {
+            return statusDesc;
+        }
+        String desc = null;
+        switch (status) {
+            case OrderService.WAIT_PAY:
+                desc = "待付款";
+                break;
+            case OrderService.WAIT_DELIVERY:
+                desc = "待发货";
+                break;
+            case OrderService.WAIT_CONFIRM:
+                desc = "待收货";
+                break;
+            case OrderService.WAIT_REVIEW:
+                desc = "等评价";
+                break;
+            case OrderService.FINISH:
+                desc = "完成";
+                break;
+            case OrderService.DELETE:
+                desc = "刪除";
+                break;
+            default:
+                desc = "未知";
+        }
+        statusDesc = desc;
+        return statusDesc;
+    }
+
     public int getId() {
         return id;
     }
@@ -35,18 +99,6 @@ public class Order {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "orderCode")
-    public String getOrderCode() {
-        return orderCode;
-    }
-
-    public void setOrderCode(String orderCode) {
-        this.orderCode = orderCode;
-    }
-
-    @Basic
-    @Column(name = "address")
     public String getAddress() {
         return address;
     }
@@ -55,8 +107,6 @@ public class Order {
         this.address = address;
     }
 
-    @Basic
-    @Column(name = "post")
     public String getPost() {
         return post;
     }
@@ -65,18 +115,6 @@ public class Order {
         this.post = post;
     }
 
-    @Basic
-    @Column(name = "receiver")
-    public String getReceiver() {
-        return receiver;
-    }
-
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
-    }
-
-    @Basic
-    @Column(name = "mobile")
     public String getMobile() {
         return mobile;
     }
@@ -85,8 +123,6 @@ public class Order {
         this.mobile = mobile;
     }
 
-    @Basic
-    @Column(name = "userMessage")
     public String getUserMessage() {
         return userMessage;
     }
@@ -95,58 +131,78 @@ public class Order {
         this.userMessage = userMessage;
     }
 
-    @Basic
-    @Column(name = "createDate")
-    public Timestamp getCreateDate() {
+    public Date getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Timestamp createDate) {
+    public void setCreateDate(Date createDate) {
         this.createDate = createDate;
     }
 
-    @Basic
-    @Column(name = "payDate")
-    public Timestamp getPayDate() {
+    public Date getPayDate() {
         return payDate;
     }
 
-    public void setPayDate(Timestamp payDate) {
+    public void setPayDate(Date payDate) {
         this.payDate = payDate;
     }
 
-    @Basic
-    @Column(name = "deliveryDate")
-    public Timestamp getDeliveryDate() {
+    public Date getDeliveryDate() {
         return deliveryDate;
     }
 
-    public void setDeliveryDate(Timestamp deliveryDate) {
+    public void setDeliveryDate(Date deliveryDate) {
         this.deliveryDate = deliveryDate;
     }
 
-    @Basic
-    @Column(name = "confirmDate")
-    public Timestamp getConfirmDate() {
+    public Date getConfirmDate() {
         return confirmDate;
     }
 
-    public void setConfirmDate(Timestamp confirmDate) {
+    public void setConfirmDate(Date confirmDate) {
         this.confirmDate = confirmDate;
     }
 
-    @Basic
-    @Column(name = "uid")
-    public Integer getUid() {
-        return uid;
+    public String getReceiver() {
+        return receiver;
     }
 
-    public void setUid(Integer uid) {
-        this.uid = uid;
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
     }
 
-    @Basic
-    @Column(name = "status")
+    public String getOrderCode() {
+        return orderCode;
+    }
+
+    public void setOrderCode(String orderCode) {
+        this.orderCode = orderCode;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+    }
+
+    public float getTotal() {
+        return total;
+    }
+
+    public void setTotal(float total) {
+        this.total = total;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -155,32 +211,12 @@ public class Order {
         this.status = status;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Order order = (Order) o;
-        return id == order.id &&
-                Objects.equals(orderCode, order.orderCode) &&
-                Objects.equals(address, order.address) &&
-                Objects.equals(post, order.post) &&
-                Objects.equals(receiver, order.receiver) &&
-                Objects.equals(mobile, order.mobile) &&
-                Objects.equals(userMessage, order.userMessage) &&
-                Objects.equals(createDate, order.createDate) &&
-                Objects.equals(payDate, order.payDate) &&
-                Objects.equals(deliveryDate, order.deliveryDate) &&
-                Objects.equals(confirmDate, order.confirmDate) &&
-                Objects.equals(uid, order.uid) &&
-                Objects.equals(status, order.status);
+    public int getTotalNumber() {
+        return totalNumber;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, orderCode, address, post, receiver, mobile, userMessage, createDate, payDate, deliveryDate, confirmDate, uid, status);
+    public void setTotalNumber(int totalNumber) {
+        this.totalNumber = totalNumber;
     }
+
 }

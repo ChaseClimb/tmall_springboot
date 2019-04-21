@@ -39,7 +39,7 @@ public class ProductImageService {
         return productImageDAO.findByProductAndTypeOrderByIdDesc(product, TYPE_DETAIL);
     }
 
-    private void setFirstProdutImage(Product product) {
+    public void setFirstProdutImage(Product product) {
         List<ProductImage> singleImages = listSingleProductImages(product);
         if (!singleImages.isEmpty()) {
             product.setFirstProductImage(singleImages.get(0));

@@ -27,10 +27,10 @@ public class ProductController {
         start = start < 0 ? 0 : start;
         Page4Navigator<Product> page = productService.list(cid, start, size, 5);
         /**
-         "firstProductImage": {
-         "id": 10199,
-         "type": "single"
-         }
+             "firstProductImage": {
+             "id": 10199,
+             "type": "single"
+             }
          */
         productImageService.setFirstProdutImages(page.getContent());
         return page;

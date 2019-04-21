@@ -72,7 +72,6 @@ public class AdminPageController {
     @GetMapping(value="/admin_user_list")
     public String listUser(){
         return "admin/listUser";
-
     }
 
 
