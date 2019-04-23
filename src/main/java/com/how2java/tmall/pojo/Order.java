@@ -61,7 +61,10 @@ public class Order {
     }
 
     public String getStatusDesc() {
-        if (null != statusDesc) {
+        if (status==null){
+            return "未知";
+        }
+        else if (null != statusDesc) {
             return statusDesc;
         }
         String desc = null;
