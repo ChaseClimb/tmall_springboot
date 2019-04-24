@@ -41,9 +41,8 @@
                     var url =  "deliveryOrder/"+order.id;
                     axios.put(url).then(function(response) {
                         $(e.target).hide();
-                        var o =  JSON.parse(response);
-                        alert(o.data.post);
-                        $("#orderStatus"+order.id).text(o.data.statusDesc);
+                        var obj = response.data;
+                        $("#orderStatus"+order.id).text(obj.data.statusDesc);
                         //vue.list(0);
                     });
                 }
