@@ -29,6 +29,7 @@ public class ProductImage {
     private Product product;
 
     private String type;
+
     public int getId() {
         return id;
     }

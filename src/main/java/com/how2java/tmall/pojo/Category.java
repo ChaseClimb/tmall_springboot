@@ -1,37 +1,42 @@
 package com.how2java.tmall.pojo;
 
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import javax.persistence.*;
-import java.util.Objects;
-
-/**
- * @author Created by chen
- * @date 2019/3/20 10:32
- */
 @Entity
 @Table(name = "category")
-//添加 handler 和 hibernateLazyInitializer 这两个无须 json 化的属性
 @JsonIgnoreProperties({"handler", "hibernateLazyInitializer"})
+
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    int id;
 
-    @Basic
-    @Column(name = "name")
-    private String name;
+    String name;
 
+    @Transient
+    List<Product> products;
 
-    public Integer getId() {
+    @Transient
+    List<List<Product>> productsByRow;
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
-
 
     public String getName() {
         return name;
@@ -41,5 +46,24 @@ public class Category {
         this.name = name;
     }
 
+    public List<Product> getProducts() {
+        return products;
+    }
 
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
+    public List<List<Product>> getProductsByRow() {
+        return productsByRow;
+    }
+
+    public void setProductsByRow(List<List<Product>> productsByRow) {
+        this.productsByRow = productsByRow;
+    }
+
+    @Override
+    public String toString() {
+        return "Category [id=" + id + ", name=" + name + "]";
+    }
 }

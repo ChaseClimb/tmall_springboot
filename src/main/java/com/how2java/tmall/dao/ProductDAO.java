@@ -11,4 +11,5 @@ import com.how2java.tmall.pojo.Product;
  
 public interface ProductDAO extends JpaRepository<Product,Integer>{
     Page<Product> findByCategory(Category category, Pageable pageable);
+    List<Product> findByCategoryOrderById(Category category);
 }
