@@ -92,10 +92,12 @@ public class ProductImageController {
             if (!fSmall.getParentFile().exists()) {
                 fSmall.getParentFile().mkdirs();
             }
-            if (!fMiddle.getParentFile().mkdirs()) {
+            if (!fMiddle.getParentFile().exists()) {
                 fMiddle.getParentFile().mkdirs();
             }
+            //中等图片
             ImageUtil.resizeImage(file, 56, 56, fSmall);
+            //小图片
             ImageUtil.resizeImage(file, 217, 190, fMiddle);
         }
 

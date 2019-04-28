@@ -62,6 +62,7 @@ public class ProductService {
 
     private void fill(Category category) {
         List<Product> products = listByCategory(category);
+        //用于首页底部图片展示
         productImageService.setFirstProdutImages(products);
         category.setProducts(products);
     }
