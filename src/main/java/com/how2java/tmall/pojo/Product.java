@@ -30,8 +30,6 @@ public class Product {
     @JoinColumn(name = "cid")
     private Category category;
 
-
-
     private String name;
     private String subTitle;
     private float originalPrice;
@@ -43,6 +41,18 @@ public class Product {
     //不进行映射，数据库没有该字段,只用于返回前端
     @Transient
     private ProductImage firstProductImage;
+
+    @Transient
+    private List<ProductImage> productSingleImages;
+
+    @Transient
+    private List<ProductImage> productDetailImages;
+
+    @Transient
+    private int reviewCount;
+
+    @Transient
+    private int saleCount;
 
     public int getId() {
         return id;
@@ -116,5 +126,54 @@ public class Product {
         this.firstProductImage = firstProductImage;
     }
 
+    public List<ProductImage> getProductSingleImages() {
+        return productSingleImages;
+    }
 
+    public void setProductSingleImages(List<ProductImage> productSingleImages) {
+        this.productSingleImages = productSingleImages;
+    }
+
+    public List<ProductImage> getProductDetailImages() {
+        return productDetailImages;
+    }
+
+    public void setProductDetailImages(List<ProductImage> productDetailImages) {
+        this.productDetailImages = productDetailImages;
+    }
+
+    public int getReviewCount() {
+        return reviewCount;
+    }
+
+    public void setReviewCount(int reviewCount) {
+        this.reviewCount = reviewCount;
+    }
+
+    public int getSaleCount() {
+        return saleCount;
+    }
+
+    public void setSaleCount(int saleCount) {
+        this.saleCount = saleCount;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", category=" + category +
+                ", name='" + name + '\'' +
+                ", subTitle='" + subTitle + '\'' +
+                ", originalPrice=" + originalPrice +
+                ", promotePrice=" + promotePrice +
+                ", stock=" + stock +
+                ", createDate=" + createDate +
+                ", firstProductImage=" + firstProductImage +
+                ", productSingleImages=" + productSingleImages +
+                ", productDetailImages=" + productDetailImages +
+                ", reviewCount=" + reviewCount +
+                ", saleCount=" + saleCount +
+                '}';
+    }
 }

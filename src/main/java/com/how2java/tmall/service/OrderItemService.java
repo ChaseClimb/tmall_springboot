@@ -3,6 +3,8 @@ package com.how2java.tmall.service;
 import com.how2java.tmall.dao.OrderItemDAO;
 import com.how2java.tmall.pojo.Order;
 import com.how2java.tmall.pojo.OrderItem;
+import com.how2java.tmall.pojo.Product;
+import com.how2java.tmall.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,22 @@ public class OrderItemService {
 
     @Autowired
     ProductImageService productImageService;
+
+    public void add(OrderItem orderItem) {
+        orderItemDAO.save(orderItem);
+    }
+
+    public OrderItem get(int id) {
+        return orderItemDAO.findOne(id);
+    }
+
+    public void update(OrderItem orderItem) {
+        orderItemDAO.save(orderItem);
+    }
+
+    public void delete(int id) {
+        orderItemDAO.delete(id);
+    }
 
     public void fill(List<Order> orders) {
         for (Order order : orders) {
@@ -40,6 +58,28 @@ public class OrderItemService {
 
     public List<OrderItem> listByOrder(Order order) {
         return orderItemDAO.findByOrderOrderByIdDesc(order);
+    }
+
+    public List<OrderItem> listByProduct(Product product) {
+        return orderItemDAO.findByProduct(product);
+    }
+
+    public int getSaleCount(Product product) {
+        List<OrderItem> ois = listByProduct(product);
+        int result = 0;
+        for (OrderItem oi : ois) {
+            if (null != oi.getOrder()) {
+                if (null != oi.getOrder() && null != oi.getOrder().getPayDate()) {
+                    result += oi.getNumber();
+                }
+            }
+        }
+        return result;
+    }
+
+    public List<OrderItem> listByUser(User user) {
+        //根据用户，查询还在购物车的orderItem
+        return orderItemDAO.findByUserAndOrderIsNull(user);
     }
 
 }

@@ -2,6 +2,16 @@
     <a th:href="${application.contextPath}">
         <img id="logo" src="img/site/logo.gif" class="logo">
     </a>
+    <!--
+        status里还包含了如下信息：
+        index 属性, 0 开始的索引值
+        count 属性, 1 开始的索引值
+        size 属性, 集合内元素的总量
+        current 属性, 当前的迭代对象
+        even/odd 属性, boolean 类型的, 用来判断是否是偶数个还是奇数个
+        first 属性, boolean 类型, 是否是第一个
+        last 属性, boolean 类型, 是否是最后一个
+    -->
     <form action="search" method="get" >
         <div class="searchDiv">
             <input name="keyword" type="text" placeholder="时尚男鞋  太阳镜 ">

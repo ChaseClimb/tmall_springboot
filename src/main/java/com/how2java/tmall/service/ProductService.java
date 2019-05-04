@@ -4,6 +4,7 @@ import com.how2java.tmall.dao.ProductDAO;
 import com.how2java.tmall.pojo.Category;
 import com.how2java.tmall.pojo.Product;
 import com.how2java.tmall.util.Page4Navigator;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +26,12 @@ public class ProductService {
 
     @Autowired
     ProductImageService productImageService;
+
+    @Autowired
+    OrderItemService orderItemService;
+
+    @Autowired
+    ReviewService reviewService;
 
     public void add(Product bean) {
         productDAO.save(bean);
@@ -52,6 +59,7 @@ public class ProductService {
 
     /**
      * 为多个分类填充产品集合
+     *
      * @param categorys
      */
     public void fill(List<Category> categorys) {
@@ -60,7 +68,7 @@ public class ProductService {
         }
     }
 
-    private void fill(Category category) {
+    public void fill(Category category) {
         List<Product> products = listByCategory(category);
         //用于首页底部图片展示
         productImageService.setFirstProdutImages(products);
@@ -69,6 +77,7 @@ public class ProductService {
 
     /**
      * 把分类下的产品集合，按照8个为一行，拆成多行
+     *
      * @param categorys
      */
     public void fillByRow(List<Category> categorys) {
@@ -93,5 +102,35 @@ public class ProductService {
     private List<Product> listByCategory(Category category) {
         return productDAO.findByCategoryOrderById(category);
     }
+
+
+    public void setSaleAndReviewNumber(Product product) {
+        int saleCount = orderItemService.getSaleCount(product);
+        product.setSaleCount(saleCount);
+
+        int reviewCount = reviewService.getCount(product);
+        product.setReviewCount(reviewCount);
+
+    }
+
+    public void setSaleAndReviewNumber(List<Product> products) {
+        for (Product product : products) {
+            setSaleAndReviewNumber(product);
+        }
+    }
+
+    public List<Product> search(String keyword, int start, int size) {
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Pageable pageable = new PageRequest(start, size, sort);
+        List<Product> products = null;
+        if (StringUtils.isNotBlank(keyword) && !"null".equals(keyword)) {
+            products = productDAO.findByNameLike("%" + keyword + "%", pageable);
+        } else {
+            products = productDAO.findAll(pageable).getContent();
+            System.out.println("66");
+        }
+        return products;
+    }
+
 
 }

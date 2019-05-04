@@ -68,7 +68,7 @@ public class CategoryController {
         return bean;
     }
 
-    //PUT 接收form表单数据无法
+    //PUT 无法接收form表单数据
     @PutMapping("/categories/{id}")
     public Object update(Category bean, MultipartFile image, HttpServletRequest request) throws Exception {
         String name = request.getParameter("name");

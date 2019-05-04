@@ -1,26 +1,35 @@
 package com.how2java.tmall.pojo;
-
-import javax.persistence.Basic;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.sql.Timestamp;
-import java.util.Objects;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-/**
- * @author Created by chen
- * @date 2019/3/20 10:32
- */
 @Entity
+@Table(name = "review")
+@JsonIgnoreProperties({ "handler","hibernateLazyInitializer" })
 public class Review {
-    private int id;
-    private String content;
-    private Integer uid;
-    private Integer pid;
-    private Timestamp createDate;
-
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    private int id;
+
+    @ManyToOne
+    @JoinColumn(name="uid")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name="pid")
+    private Product product;
+
+    private String content;
+    private Date createDate;
+
     public int getId() {
         return id;
     }
@@ -28,65 +37,29 @@ public class Review {
     public void setId(int id) {
         this.id = id;
     }
-
-    @Basic
-    @Column(name = "content")
     public String getContent() {
         return content;
     }
-
     public void setContent(String content) {
         this.content = content;
     }
-
-    @Basic
-    @Column(name = "uid")
-    public Integer getUid() {
-        return uid;
-    }
-
-    public void setUid(Integer uid) {
-        this.uid = uid;
-    }
-
-    @Basic
-    @Column(name = "pid")
-    public Integer getPid() {
-        return pid;
-    }
-
-    public void setPid(Integer pid) {
-        this.pid = pid;
-    }
-
-    @Basic
-    @Column(name = "createDate")
-    public Timestamp getCreateDate() {
+    public Date getCreateDate() {
         return createDate;
     }
-
-    public void setCreateDate(Timestamp createDate) {
+    public void setCreateDate(Date createDate) {
         this.createDate = createDate;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Review review = (Review) o;
-        return id == review.id &&
-                Objects.equals(content, review.content) &&
-                Objects.equals(uid, review.uid) &&
-                Objects.equals(pid, review.pid) &&
-                Objects.equals(createDate, review.createDate);
+    public User getUser() {
+        return user;
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, content, uid, pid, createDate);
+    public void setUser(User user) {
+        this.user = user;
+    }
+    public Product getProduct() {
+        return product;
+    }
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }

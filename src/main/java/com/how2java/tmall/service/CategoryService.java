@@ -59,7 +59,7 @@ public class CategoryService {
     }
 
     //避免无限递归
-    private void removeCategoryFromProduct(Category category) {
+    public void removeCategoryFromProduct(Category category) {
 
         List<Product> products = category.getProducts();
         if (null != products) {

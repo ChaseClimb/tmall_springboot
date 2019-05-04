@@ -80,7 +80,8 @@
             </tr>
             </thead>
             <tbody>
-            <!-- 在业务上需要一个订单数据产生两行 tr, 此时就不能在 tr上进行 v-for, 而需要用 template 标签 -->
+            <!-- 在业务上需要一个订单数据产生两行 tr,
+            此时就不能在 tr上进行 v-for, 而需要用 template 标签 -->
             <template v-for="bean in beans ">
                 <tr >
                     <td :id="'orderStatus'+bean.id">
@@ -113,6 +114,7 @@
                         <button v-if="'waitDelivery'==bean.status" @click="deliveryOrder(bean,$event)" class="btn btn-primary btn-xs">发货</button>
                     </td>
                 </tr>
+
                 <tr class="orderPageOrderItemTR"  :id="'orderItemsTR'+bean.id">
                     <td colspan="10" align="center">
 
