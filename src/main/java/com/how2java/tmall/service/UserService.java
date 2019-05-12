@@ -13,35 +13,41 @@ import org.springframework.stereotype.Service;
 import com.how2java.tmall.dao.UserDAO;
 import com.how2java.tmall.pojo.User;
 import com.how2java.tmall.util.Page4Navigator;
+import com.how2java.tmall.util.SpringContextUtil;
 
 @Service
+@CacheConfig(cacheNames="users")
 public class UserService {
 
-    @Autowired
-    UserDAO userDAO;
-
-    public Page4Navigator<User> list(int start, int size, int navigatePages) {
-        Sort sort = new Sort(Sort.Direction.DESC, "id");
-        Pageable pageable = new PageRequest(start, size, sort);
-        Page pageFromJPA = userDAO.findAll(pageable);
-        return new Page4Navigator<>(pageFromJPA, navigatePages);
-    }
+    @Autowired UserDAO userDAO;
 
     public boolean isExist(String name) {
-        User user = getByName(name);
+        UserService userService = SpringContextUtil.getBean(UserService.class);
+        User user = userService.getByName(name);
         return null!=user;
     }
 
+    @Cacheable(key="'users-one-name-'+ #p0")
     public User getByName(String name) {
         return userDAO.findByName(name);
     }
 
-    public void add(User user) {
-        userDAO.save(user);
-    }
-
+    @Cacheable(key="'users-one-name-'+ #p0 +'-password-'+ #p1")
     public User get(String name, String password) {
         return userDAO.getByNameAndPassword(name,password);
+    }
+
+    @Cacheable(key="'users-page-'+#p0+ '-' + #p1")
+    public Page4Navigator<User> list(int start, int size, int navigatePages) {
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Pageable pageable = new PageRequest(start, size,sort);
+        Page pageFromJPA =userDAO.findAll(pageable);
+        return new Page4Navigator<>(pageFromJPA,navigatePages);
+    }
+
+    @CacheEvict(allEntries=true)
+    public void add(User user) {
+        userDAO.save(user);
     }
 
 }

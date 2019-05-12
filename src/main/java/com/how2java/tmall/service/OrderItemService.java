@@ -1,85 +1,89 @@
 package com.how2java.tmall.service;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
+
 import com.how2java.tmall.dao.OrderItemDAO;
 import com.how2java.tmall.pojo.Order;
 import com.how2java.tmall.pojo.OrderItem;
 import com.how2java.tmall.pojo.Product;
 import com.how2java.tmall.pojo.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
+import com.how2java.tmall.util.SpringContextUtil;
 
 @Service
+@CacheConfig(cacheNames="orderItems")
 public class OrderItemService {
-    @Autowired
-    OrderItemDAO orderItemDAO;
+    @Autowired OrderItemDAO orderItemDAO;
+    @Autowired ProductImageService productImageService;
 
-    @Autowired
-    ProductImageService productImageService;
-
-    public void add(OrderItem orderItem) {
-        orderItemDAO.save(orderItem);
+    public void fill(List<Order> orders) {
+        for (Order order : orders)
+            fill(order);
     }
-
-    public OrderItem get(int id) {
-        return orderItemDAO.findOne(id);
-    }
-
+    @CacheEvict(allEntries=true)
     public void update(OrderItem orderItem) {
         orderItemDAO.save(orderItem);
     }
 
-    public void delete(int id) {
-        orderItemDAO.delete(id);
-    }
-
-    public void fill(List<Order> orders) {
-        for (Order order : orders) {
-            fill(order);
-        }
-    }
-
-    //从数据库中取出来的 Order 是没有 OrderItem集合的，
-    // 这里通过 OrderItemService取出来再放在 Order的 orderItems属性上。
     public void fill(Order order) {
-        List<OrderItem> orderItems = listByOrder(order);
+        OrderItemService orderItemService = SpringContextUtil.getBean(OrderItemService.class);
+        List<OrderItem> orderItems = orderItemService.listByOrder(order);
         float total = 0;
         int totalNumber = 0;
-        for (OrderItem oi : orderItems) {
-            total += oi.getNumber() * oi.getProduct().getPromotePrice();
-            totalNumber += oi.getNumber();
+        for (OrderItem oi :orderItems) {
+            total+=oi.getNumber()*oi.getProduct().getPromotePrice();
+            totalNumber+=oi.getNumber();
             productImageService.setFirstProdutImage(oi.getProduct());
         }
         order.setTotal(total);
         order.setOrderItems(orderItems);
         order.setTotalNumber(totalNumber);
+        order.setOrderItems(orderItems);
     }
 
-    public List<OrderItem> listByOrder(Order order) {
-        return orderItemDAO.findByOrderOrderByIdDesc(order);
+    @CacheEvict(allEntries=true)
+    public void add(OrderItem orderItem) {
+        orderItemDAO.save(orderItem);
+    }
+    @Cacheable(key="'orderItems-one-'+ #p0")
+    public OrderItem get(int id) {
+        return orderItemDAO.findOne(id);
     }
 
-    public List<OrderItem> listByProduct(Product product) {
-        return orderItemDAO.findByProduct(product);
+    @CacheEvict(allEntries=true)
+    public void delete(int id) {
+        orderItemDAO.delete(id);
     }
 
     public int getSaleCount(Product product) {
-        List<OrderItem> ois = listByProduct(product);
-        int result = 0;
+        OrderItemService orderItemService = SpringContextUtil.getBean(OrderItemService.class);
+        List<OrderItem> ois =orderItemService.listByProduct(product);
+        int result =0;
         for (OrderItem oi : ois) {
-            if (null != oi.getOrder()) {
-                if (null != oi.getOrder() && null != oi.getOrder().getPayDate()) {
-                    result += oi.getNumber();
-                }
-            }
+            if(null!=oi.getOrder())
+                if(null!= oi.getOrder() && null!=oi.getOrder().getPayDate())
+                    result+=oi.getNumber();
         }
         return result;
     }
 
+    @Cacheable(key="'orderItems-uid-'+ #p0.id")
     public List<OrderItem> listByUser(User user) {
-        //根据用户，查询还在购物车的orderItem
         return orderItemDAO.findByUserAndOrderIsNull(user);
+    }
+
+    @Cacheable(key="'orderItems-pid-'+ #p0.id")
+    public List<OrderItem> listByProduct(Product product) {
+        return orderItemDAO.findByProduct(product);
+    }
+    @Cacheable(key="'orderItems-oid-'+ #p0.id")
+    public List<OrderItem> listByOrder(Order order) {
+        return orderItemDAO.findByOrderOrderByIdDesc(order);
     }
 
 }
